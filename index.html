@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc nghiệm 50 Từ vựng Trọng tâm & Phân tích Gốc Hán</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f4f6f9; 
+            color: #333; 
+            margin: 0; 
+            padding: 20px; 
+            font-size: 16px; 
+        }
+        .container { max-width: 95%; margin: 0 auto; } 
+        h1 { text-align: center; color: #2c3e50; font-size: 1.8em; margin-bottom: 20px; line-height: 1.4;}
+        
+        /* Bảng điểm ghim trên cùng */
+        .score-banner {
+            position: sticky;
+            top: 10px;
+            background: #8e44ad; 
+            color: #fff;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            z-index: 100;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        #retry-btn {
+            background: #f1c40f;
+            color: #2c3e50;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            display: none; 
+            transition: 0.3s;
+        }
+        #retry-btn:hover { background: #f39c12; color: #fff; }
+
+        /* Khung Danh Mục Chủ Đề */
+        .category-title {
+            font-size: 1.4em;
+            color: #2980b9;
+            border-bottom: 2px solid #2980b9;
+            padding-bottom: 5px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        /* --- KHUNG CÂU HỎI --- */
+        .question-card { 
+            background: #fff; 
+            border-radius: 12px; 
+            padding: 15px; 
+            margin-bottom: 15px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05); 
+            border-top: 5px solid #9b59b6; 
+        }
+        .q-header { 
+            font-size: 1.1em; 
+            color: #7f8c8d; 
+            font-weight: bold; 
+            margin-bottom: 10px; 
+        }
+        .badge {
+            background: #ebdef0;
+            color: #7d3c98;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            margin-left: 10px;
+        }
+        .q-word { 
+            font-size: 2.6em; 
+            font-weight: bold; 
+            color: #2c3e50; 
+            margin-bottom: 15px; 
+            text-align: center; 
+            letter-spacing: 2px;
+        }
+        
+        /* Lưới đáp án */
+        .options { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media (max-width: 600px) { .options { grid-template-columns: 1fr; } }
+        
+        .opt-btn { 
+            padding: 15px; font-size: 1.1em; border: 2px solid #dcdde1; 
+            border-radius: 8px; background: #fdfdfd; cursor: pointer; 
+            transition: 0.2s; text-align: center; font-weight: bold; color: #2f3640;
+        }
+        .opt-btn:hover:not(:disabled) { border-color: #9b59b6; background: #f5eef8; }
+        .opt-btn:disabled { cursor: default; }
+        .opt-btn.correct { background: #d4edda; border-color: #28a745; color: #155724; }
+        .opt-btn.wrong { background: #f8d7da; border-color: #e74c3c; color: #721c24; }
+        
+        /* --- KHUNG GIẢI THÍCH CHI TIẾT --- */
+        .explanation { 
+            margin-top: 15px; 
+            padding: 15px; 
+            border-radius: 8px; 
+            background: #fff; 
+            border-left: 5px solid #8e44ad; 
+            line-height: 1.6;
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+            box-shadow: 0 0 15px rgba(0,0,0,0.03);
+        }
+
+        .correct-ans { 
+            color: #8e44ad; 
+            font-size: 1.3em; 
+            display: block; 
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* --- KHU VỰC VÍ DỤ --- */
+        .example-box {
+            background: #fdf2e9; 
+            padding: 12px 15px; 
+            border-radius: 6px; 
+            margin-bottom: 15px; 
+            border-left: 4px solid #e67e22;
+        }
+        .example-box .kr-ex { 
+            font-weight: bold; 
+            font-size: 1.15em; 
+            color: #d35400;
+            display: block;
+        }
+        .example-box .vn-ex { 
+            font-size: 1em; 
+            color: #555; 
+            margin-top: 5px;
+        }
+
+        /* --- PHÂN TÍCH HÁN HÀN ĐẶC BIỆT --- */
+        .han-viet-box {
+            background: #eaeded; 
+            color: #2c3e50; 
+            padding: 15px; 
+            border-radius: 6px; 
+            font-size: 1.05em; 
+            border-left: 4px solid #34495e;
+        }
+        .han-viet-box strong { color: #2c3e50; font-size: 1.1em;}
+        .han-viet-box .hanja { 
+            color: #c0392b; 
+            font-weight: bold; 
+            background: #fadbd8;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin: 0 3px;
+        }
+        .han-viet-box ul { margin: 8px 0 0 0; padding-left: 20px; }
+        .han-viet-box li { margin-bottom: 5px; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Trắc nghiệm Từ vựng Nâng cao: Gốc Hán & Đời sống (50 từ)</h1>
+    
+    <div class="score-banner">
+        <span id="score-text">Điểm: 0 / 0 (Đã làm: 0/50)</span>
+        <button id="retry-btn" onclick="retryWrongQuestions()">🔄 Làm lại câu sai</button>
+    </div>
+
+    <div id="quiz-container"></div>
+</div>
+
+<script>
+// Dữ liệu 50 từ vựng nâng cao kèm phân tích Hán Việt chuyên sâu
+const data = [
+    // --- HÀNH CHÍNH & CƯ TRÚ ---
+    { id: 1, kr: "출입국관리사무소", vn: "phòng quản lý xuất nhập cảnh", cat: "Hành chính", 
+      ex_kr: "비자를 연장하려면 출입국관리사무소에 가야 합니다.", ex_vn: "Để gia hạn visa, bạn phải đến văn phòng quản lý xuất nhập cảnh.", 
+      han: "<span class='hanja'>出入國管理事務所</span> (Xuất Nhập Quốc Quản Lý Sự Vụ Sở)<br><ul><li><b>出入國</b>: Xuất nhập cảnh (ra vào đất nước).</li><li><b>管理</b>: Quản lý.</li><li><b>事務所</b>: Nơi làm việc, văn phòng (Sự vụ sở).</li></ul>" },
+    { id: 2, kr: "구비 서류", vn: "giấy tờ cần thiết (đã chuẩn bị đủ)", cat: "Hành chính", 
+      ex_kr: "신청서와 구비 서류를 제출해 주세요.", ex_vn: "Vui lòng nộp đơn đăng ký và các giấy tờ cần thiết.", 
+      han: "<span class='hanja'>具備書類</span> (Cụ Bị Thư Loại)<br><ul><li><b>具備 (구비)</b>: Cụ bị (Chuẩn bị đầy đủ, trang bị đủ).</li><li><b>書類 (서류)</b>: Thư loại (Các loại giấy tờ, văn bản).</li></ul>" },
+    { id: 3, kr: "외국인 등록증", vn: "thẻ chứng nhận người nước ngoài", cat: "Hành chính", 
+      ex_kr: "항상 외국인 등록증을 소지해야 합니다.", ex_vn: "Bạn phải luôn mang theo thẻ người nước ngoài.", 
+      han: "<span class='hanja'>外國人登錄證</span> (Ngoại Quốc Nhân Đăng Lục Chứng)<br><ul><li><b>登錄 (등록)</b>: Đăng lục (Đăng ký, ghi chép lại).</li><li><b>證 (증)</b>: Chứng (Thẻ chứng nhận, bằng chứng).</li></ul>" },
+    { id: 4, kr: "주민 센터", vn: "trung tâm cư trú (UBND phường)", cat: "Hành chính", 
+      ex_kr: "이사 후에는 주민 센터에 가서 전입신고를 해야 한다.", ex_vn: "Sau khi chuyển nhà phải đến trung tâm cư trú để khai báo chuyển đến.", 
+      han: "<span class='hanja'>住民</span> (Trú Dân) + Center (Tiếng Anh)<br><ul><li><b>住民 (주민)</b>: Người dân sinh sống tại khu vực đó. Kết hợp với từ Center tạo thành tên gọi cơ quan hành chính cấp phường/xã.</li></ul>" },
+    { id: 5, kr: "구청", vn: "chính quyền khu vực (Ủy ban quận)", cat: "Hành chính", 
+      ex_kr: "여권을 발급받으려면 구청에 가야 합니다.", ex_vn: "Để làm hộ chiếu, bạn phải đến ủy ban quận.", 
+      han: "<span class='hanja'>區廳</span> (Khu Sảnh)<br><ul><li><b>區 (구)</b>: Khu (Khu vực, Quận).</li><li><b>廳 (청)</b>: Sảnh (Cơ quan chính quyền lớn, ví dụ: 시청 - Tòa thị chính).</li></ul>" },
+    { id: 6, kr: "발급", vn: "cấp/phát (giấy chứng nhận)", cat: "Hành chính", 
+      ex_kr: "은행에서 새로운 카드를 발급받았다.", ex_vn: "Tôi đã được cấp phát thẻ mới ở ngân hàng.", 
+      han: "<span class='hanja'>發給</span> (Phát Cấp)<br><ul><li><b>發 (발)</b>: Phát (Phát ra, đưa ra).</li><li><b>給 (급)</b>: Cấp (Cung cấp, cấp cho).</li></ul>" },
+    { id: 7, kr: "유효기간", vn: "thời hạn có hiệu lực", cat: "Hành chính", 
+      ex_kr: "이 쿠폰의 유효기간은 내일까지입니다.", ex_vn: "Thời hạn hiệu lực của phiếu giảm giá này là đến ngày mai.", 
+      han: "<span class='hanja'>有效期間</span> (Hữu Hiệu Kỳ Gian)<br><ul><li><b>有效 (유효)</b>: Có hiệu lực, có tác dụng.</li><li><b>期間 (기간)</b>: Kỳ gian (Khoảng thời gian).</li></ul>" },
+    { id: 8, kr: "연장하다", vn: "kéo dài, mở rộng, gia hạn", cat: "Hành chính", 
+      ex_kr: "체류 기간을 연장하기 위해 서류를 준비했다.", ex_vn: "Tôi đã chuẩn bị hồ sơ để gia hạn thời gian lưu trú.", 
+      han: "<span class='hanja'>延長</span> (Diên Trường)<br><ul><li><b>延 (연)</b>: Diên (Kéo dài ra, trì hoãn).</li><li><b>長 (장)</b>: Trường (Dài).</li></ul>" },
+    { id: 9, kr: "체류", vn: "tạm trú, lưu trú", cat: "Hành chính", 
+      ex_kr: "한국에서의 체류 기간이 얼마 남지 않았다.", ex_vn: "Thời gian lưu trú tại Hàn Quốc không còn nhiều.", 
+      han: "<span class='hanja'>滯留</span> (Trệ Lưu)<br><ul><li><b>滯 (체)</b>: Trệ (Đình trệ, đọng lại).</li><li><b>留 (류/유)</b>: Lưu (Ở lại, giữ lại). Ý chỉ việc ở lại một quốc gia khác.</li></ul>" },
+    { id: 10, kr: "신고", vn: "khai báo", cat: "Hành chính", 
+      ex_kr: "경찰서에 도난 신고를 했습니다.", ex_vn: "Tôi đã khai báo mất cắp tại đồn cảnh sát.", 
+      han: "<span class='hanja'>申告</span> (Thân Cáo)<br><ul><li><b>申 (신)</b>: Thân (Bày tỏ, trình bày).</li><li><b>告 (고)</b>: Cáo (Báo cáo, nói cho biết).</li></ul>" },
+    { id: 11, kr: "주거지", vn: "nơi cư trú", cat: "Hành chính", 
+      ex_kr: "주거지를 변경하면 반드시 신고해야 한다.", ex_vn: "Nếu thay đổi nơi cư trú thì nhất định phải khai báo.", 
+      han: "<span class='hanja'>住居地</span> (Trú Cư Địa)<br><ul><li><b>住居 (주거)</b>: Trú cư (Sinh sống, ở).</li><li><b>地 (지)</b>: Địa (Đất, địa điểm).</li></ul>" },
+    { id: 12, kr: "출장소", vn: "phân sở, chi nhánh (cơ quan nhà nước)", cat: "Hành chính", 
+      ex_kr: "본청에 가기 멀면 출장소에서 업무를 볼 수 있다.", ex_vn: "Nếu đến trụ sở chính xa, bạn có thể giải quyết công việc ở chi nhánh.", 
+      han: "<span class='hanja'>出張所</span> (Xuất Trương Sở)<br><ul><li><b>出張 (출장)</b>: Đi công tác, phái cử đi.</li><li><b>所 (소)</b>: Nơi chốn. -> Nơi được lập ra làm chi nhánh để xử lý công việc phụ.</li></ul>" },
+    { id: 13, kr: "관리 사무소", vn: "văn phòng ban quản lý", cat: "Cư trú", 
+      ex_kr: "아파트 관리 사무소에서 방송을 합니다.", ex_vn: "Ban quản lý chung cư đang phát loa thông báo.", 
+      han: "<span class='hanja'>管理事務所</span> (Quản Lý Sự Vụ Sở)<br><ul><li><b>管理 (관리)</b>: Quản lý, coi sóc.</li></ul>" },
+    { id: 14, kr: "관리비", vn: "phí quản lý", cat: "Cư trú", 
+      ex_kr: "이번 달은 관리비가 많이 나왔네요.", ex_vn: "Tháng này phí quản lý ra nhiều quá.", 
+      han: "<span class='hanja'>管理費</span> (Quản Lý Phí)<br><ul><li><b>費 (비)</b>: Phí (Chi phí, tiền phải trả).</li></ul>" },
+
+    // --- Y TẾ & CỨU TRỢ ---
+    { id: 15, kr: "긴급 전화", vn: "điện thoại khẩn cấp", cat: "Y tế & Cứu trợ", 
+      ex_kr: "위급한 상황에서는 112나 119로 긴급 전화를 거세요.", ex_vn: "Trong tình huống nguy cấp hãy gọi điện thoại khẩn cấp đến 112 hoặc 119.", 
+      han: "<span class='hanja'>緊急電話</span> (Khẩn Cấp Điện Thoại)<br><ul><li><b>緊 (긴)</b>: Khẩn (Gấp gáp, căng thẳng).</li><li><b>急 (급)</b>: Cấp (Nhanh, vội vã).</li></ul>" },
+    { id: 16, kr: "응급 환자", vn: "bệnh nhân cấp cứu", cat: "Y tế & Cứu trợ", 
+      ex_kr: "응급 환자가 발생해서 구급차를 불렀다.", ex_vn: "Có bệnh nhân cấp cứu nên tôi đã gọi xe cứu thương.", 
+      han: "<span class='hanja'>應急患者</span> (Ứng Cấp Hoạn Giả)<br><ul><li><b>應急 (응급)</b>: Ứng phó kịp thời với tình huống gấp.</li><li><b>患 (환)</b>: Hoạn (Mắc bệnh).</li><li><b>者 (자)</b>: Giả (Người).</li></ul>" },
+    { id: 17, kr: "구조 요청", vn: "yêu cầu cứu trợ", cat: "Y tế & Cứu trợ", 
+      ex_kr: "배가 가라앉고 있어서 구조 요청을 보냈다.", ex_vn: "Thuyền đang chìm nên đã gửi yêu cầu cứu trợ.", 
+      han: "<span class='hanja'>救助要請</span> (Cứu Trợ Yêu Thỉnh)<br><ul><li><b>救助 (구조)</b>: Cứu trợ (Giúp đỡ người gặp nạn).</li><li><b>要請 (요청)</b>: Yêu thỉnh (Yêu cầu, thỉnh cầu thiết tha).</li></ul>" },
+
+    // --- ĐỜI SỐNG SINH HOẠT ---
+    { id: 18, kr: "의식주", vn: "ăn mặc ở (nhu cầu thiết yếu)", cat: "Đời sống", 
+      ex_kr: "의식주는 인간 생활의 가장 기본 요소입니다.", ex_vn: "Ăn mặc ở là yếu tố cơ bản nhất của sinh hoạt con người.", 
+      han: "<span class='hanja'>衣食住</span> (Y Thực Trụ)<br><ul><li><b>衣 (의)</b>: Y (Áo, mặc).</li><li><b>食 (식)</b>: Thực (Ăn).</li><li><b>住 (주)</b>: Trụ (Chỗ ở). Trật tự trong tiếng Hàn là Mặc - Ăn - Ở.</li></ul>" },
+    { id: 19, kr: "물가", vn: "vật giá", cat: "Đời sống", 
+      ex_kr: "최근 물가가 너무 많이 올랐어요.", ex_vn: "Gần đây vật giá tăng cao quá.", 
+      han: "<span class='hanja'>物價</span> (Vật Giá)<br><ul><li><b>物 (물)</b>: Vật (Đồ vật, hàng hóa).</li><li><b>價 (가)</b>: Giá (Giá cả, giá trị).</li></ul>" },
+    { id: 20, kr: "생활필수품", vn: "đồ sinh hoạt thiết yếu", cat: "Đời sống", 
+      ex_kr: "태풍이 오기 전에 생활필수품을 미리 사 두었다.", ex_vn: "Tôi đã mua sẵn đồ sinh hoạt thiết yếu trước khi bão đến.", 
+      han: "<span class='hanja'>生活必需品</span> (Sinh Hoạt Tất Tu Phẩm)<br><ul><li><b>必 (필)</b>: Tất (Nhất định, ắt phải).</li><li><b>需 (수)</b>: Tu (Nhu cầu, cần dùng).</li><li><b>品 (품)</b>: Phẩm (Đồ vật).</li></ul>" },
+    { id: 21, kr: "세면도구", vn: "dụng cụ tắm rửa vệ sinh (xà phòng, khăn...)", cat: "Đời sống", 
+      ex_kr: "호텔에는 세면도구가 다 준비되어 있어요.", ex_vn: "Ở khách sạn đã chuẩn bị sẵn mọi dụng cụ vệ sinh cá nhân.", 
+      han: "<span class='hanja'>洗面道具</span> (Tẩy Diện Đạo Cụ)<br><ul><li><b>洗 (세)</b>: Tẩy (Rửa, giặt).</li><li><b>面 (면)</b>: Diện (Khuôn mặt). -> 洗面: Rửa mặt.</li><li><b>道具 (도구)</b>: Đạo cụ (Đồ nghề, dụng cụ).</li></ul>" },
+    { id: 22, kr: "주방용품", vn: "đồ dùng trong nhà bếp", cat: "Đời sống", 
+      ex_kr: "이 마트에서는 다양한 주방용품을 싸게 판다.", ex_vn: "Siêu thị này bán nhiều đồ dùng nhà bếp đa dạng với giá rẻ.", 
+      han: "<span class='hanja'>廚房用品</span> (Trù Phòng Dụng Phẩm)<br><ul><li><b>廚房 (주방)</b>: Trù phòng (Nhà bếp).</li><li><b>用品 (용품)</b>: Đồ chuyên dùng.</li></ul>" },
+    { id: 23, kr: "단수", vn: "cắt nước", cat: "Đời sống", 
+      ex_kr: "수도관 공사로 인해 내일 하루 동안 단수됩니다.", ex_vn: "Do thi công ống nước nên ngày mai sẽ bị cắt nước cả ngày.", 
+      han: "<span class='hanja'>斷水</span> (Đoạn Thủy)<br><ul><li><b>斷 (단)</b>: Đoạn (Cắt đứt, làm gián đoạn).</li><li><b>水 (수)</b>: Thủy (Nước).</li></ul>" },
+    { id: 24, kr: "정전", vn: "cắt điện, mất điện", cat: "Đời sống", 
+      ex_kr: "폭우로 인해 마을 전체에 정전이 발생했다.", ex_vn: "Do mưa lớn nên toàn bộ ngôi làng đã bị mất điện.", 
+      han: "<span class='hanja'>停電</span> (Đình Điện)<br><ul><li><b>停 (정)</b>: Đình (Dừng lại, ngừng).</li><li><b>電 (전)</b>: Điện.</li></ul>" },
+    { id: 25, kr: "난방", vn: "sưởi ấm, phòng có hệ thống sưởi", cat: "Đời sống", 
+      ex_kr: "겨울에는 난방비가 많이 듭니다.", ex_vn: "Vào mùa đông chi phí sưởi ấm tốn rất nhiều.", 
+      han: "<span class='hanja'>暖房</span> (Noãn Phòng)<br><ul><li><b>暖 (난)</b>: Noãn (Ấm áp).</li><li><b>房 (방)</b>: Phòng (Căn phòng).</li></ul>" },
+    { id: 26, kr: "종량제 봉투", vn: "túi đựng rác theo quy chế tự giảm lượng rác", cat: "Đời sống", 
+      ex_kr: "일반 쓰레기는 반드시 종량제 봉투에 담아 버려야 합니다.", ex_vn: "Rác thải thường nhất định phải bỏ vào túi rác quy chuẩn (mua theo dung tích).", 
+      han: "<span class='hanja'>從量制封套</span> (Tùng Lượng Chế Phong Sáo)<br><ul><li><b>從量 (종량)</b>: Tùng lượng (Thu phí dựa theo số lượng/trọng lượng).</li><li><b>制 (제)</b>: Chế độ.</li><li><b>封套 (봉투)</b>: Phong sáo (Túi, bao bì đựng).</li></ul>" },
+    { id: 27, kr: "쓰레기 분리 배출", vn: "gom rác theo từng loại, xả rác phân loại", cat: "Đời sống", 
+      ex_kr: "환경을 위해 쓰레기 분리 배출을 철저히 합시다.", ex_vn: "Vì môi trường, hãy thực hiện triệt để việc phân loại và xả rác.", 
+      han: "<span class='hanja'>分離排出</span> (Phân Ly Bài Xuất)<br><ul><li><b>分離 (분리)</b>: Phân ly (Tách riêng ra).</li><li><b>排出 (배출)</b>: Bài xuất (Đẩy ra, xả ra ngoài).</li></ul>" },
+    { id: 28, kr: "재활용 쓰레기", vn: "rác để tái chế", cat: "Đời sống", 
+      ex_kr: "종이, 유리, 플라스틱은 재활용 쓰레기입니다.", ex_vn: "Giấy, thủy tinh, nhựa là rác tái chế.", 
+      han: "<span class='hanja'>再活用</span> (Tái Hoạt Dụng)<br><ul><li><b>再 (재)</b>: Tái (Lần nữa, lặp lại).</li><li><b>活用 (활용)</b>: Hoạt dụng (Sử dụng lại một cách linh hoạt).</li></ul>" },
+    { id: 29, kr: "생활 정보지", vn: "báo/tạp chí thông tin sinh hoạt", cat: "Đời sống", 
+      ex_kr: "일자리를 구하려고 생활 정보지를 찾아보았다.", ex_vn: "Tôi đã tìm đọc báo thông tin sinh hoạt để kiếm việc làm.", 
+      han: "<span class='hanja'>生活情報紙</span> (Sinh Hoạt Tình Báo Chỉ)<br><ul><li><b>情報 (정보)</b>: Tình báo (Thông tin).</li><li><b>紙 (지)</b>: Chỉ (Giấy, báo chí).</li></ul>" },
+    { id: 30, kr: "생활 지원", vn: "hỗ trợ sinh hoạt", cat: "Đời sống", 
+      ex_kr: "정부에서 저소득층에게 생활 지원금을 지급했다.", ex_vn: "Chính phủ đã cấp tiền hỗ trợ sinh hoạt cho tầng lớp thu nhập thấp.", 
+      han: "<span class='hanja'>生活支援</span> (Sinh Hoạt Chi Viện)<br><ul><li><b>支 (지)</b>: Chi (Chống đỡ, giúp đỡ).</li><li><b>援 (원)</b>: Viện (Cứu viện, hỗ trợ).</li></ul>" },
+
+    // --- MUA SẮM & DỊCH VỤ ---
+    { id: 31, kr: "매매", vn: "mua bán", cat: "Mua sắm & Dịch vụ", 
+      ex_kr: "이 건물은 현재 매매가 진행 중입니다.", ex_vn: "Tòa nhà này hiện đang trong quá trình mua bán.", 
+      han: "<span class='hanja'>賣買</span> (Mại Mãi)<br><ul><li><b>賣 (매)</b>: Mại (Bán).</li><li><b>買 (매)</b>: Mãi (Mua). -> Kết hợp lại là hoạt động mua bán, giao dịch thương mại.</li></ul>" },
+    { id: 32, kr: "재래시장", vn: "chợ truyền thống", cat: "Mua sắm & Dịch vụ", 
+      ex_kr: "대형 마트보다 재래시장이 더 정감이 간다.", ex_vn: "So với siêu thị lớn, chợ truyền thống mang lại cảm giác thân tình hơn.", 
+      han: "<span class='hanja'>在來市場</span> (Tại Lai Thị Trường)<br><ul><li><b>在來 (재래)</b>: Tại lai (Có từ xưa, truyền thống).</li><li><b>市場 (시장)</b>: Chợ.</li></ul>" },
+    { id: 33, kr: "벼룩시장", vn: "chợ trời (bán đồ cũ)", cat: "Mua sắm & Dịch vụ", 
+      ex_kr: "주말에 열리는 벼룩시장에서 예쁜 옷을 싸게 샀다.", ex_vn: "Tôi đã mua được quần áo đẹp giá rẻ ở chợ trời mở vào cuối tuần.", 
+      han: "Từ ghép: <b>벼룩</b> (Thuần Hàn: Con bọ chét) + <span class='hanja'>市場</span> (Hán Hàn: Thị trường/Chợ). Đây là cách dịch sát nghĩa của cụm từ tiếng Anh 'Flea Market'." },
+    { id: 34, kr: "중고품", vn: "đồ cũ, đồ đã qua sử dụng", cat: "Mua sắm & Dịch vụ", 
+      ex_kr: "새것은 너무 비싸서 중고품을 알아보고 있어요.", ex_vn: "Đồ mới đắt quá nên tôi đang tìm hiểu mua đồ cũ.", 
+      han: "<span class='hanja'>中古品</span> (Trung Cổ Phẩm)<br><ul><li><b>中 (중)</b>: Ở giữa (đang dùng dở).</li><li><b>古 (고)</b>: Cổ (Cũ kỹ).</li><li><b>品 (품)</b>: Đồ vật.</li></ul>" },
+    { id: 35, kr: "흥정하다", vn: "trả giá, mặc cả", cat: "Mua sắm & Dịch vụ", 
+      ex_kr: "시장에서는 물건 값을 흥정하는 재미가 있다.", ex_vn: "Ở chợ có thú vui là được mặc cả giá hàng hóa.", 
+      han: "Nguồn gốc có thể từ <span class='hanja'>興亭</span> (Hưng Đình), nhưng hiện nay được xem như một từ đã bị <b>Thuần Hàn hóa</b> hoàn toàn mang nghĩa là ngã giá, mặc cả." },
+    { id: 36, kr: "덤을 주다", vn: "cho thêm (khuyến mãi thêm)", cat: "Mua sắm & Dịch vụ", 
+      ex_kr: "시장 아주머니가 인심이 좋으셔서 과일을 덤으로 더 주셨다.", ex_vn: "Bác ở chợ rất tốt bụng nên đã cho thêm trái cây khuyến mãi.", 
+      han: "🌱 <b>Từ Thuần Hàn</b>. <b>덤</b> nghĩa là phần được tặng thêm, bù thêm vào ngoài phần chính để làm vui lòng khách." },
+    { id: 37, kr: "배송", vn: "giao hàng tận nhà", cat: "Mua sắm & Dịch vụ", 
+      ex_kr: "인터넷으로 주문한 물건이 오늘 배송될 예정이다.", ex_vn: "Món hàng đặt trên mạng dự kiến sẽ được giao trong hôm nay.", 
+      han: "<span class='hanja'>配送</span> (Phối Tống)<br><ul><li><b>配 (배)</b>: Phối (Sắp xếp, phân bổ).</li><li><b>送 (송)</b>: Tống (Gửi đi, đưa đi).</li></ul>" },
+    { id: 38, kr: "퀵서비스", vn: "dịch vụ chuyển hàng nhanh", cat: "Mua sắm & Dịch vụ", 
+      ex_kr: "서류를 급하게 보내야 해서 퀵서비스를 불렀다.", ex_vn: "Vì phải gửi tài liệu gấp nên tôi đã gọi dịch vụ chuyển phát nhanh.", 
+      han: "Từ ngoại lai kết hợp: <b>Quick</b> (Nhanh) + <b>Service</b> (Dịch vụ)." },
+    { id: 39, kr: "가입비", vn: "phí gia nhập (phí hòa mạng, hội phí)", cat: "Mua sắm & Dịch vụ", 
+      ex_kr: "헬스클럽에 등록할 때 처음에는 가입비를 내야 한다.", ex_vn: "Khi đăng ký câu lạc bộ thể hình, ban đầu phải nộp phí gia nhập.", 
+      han: "<span class='hanja'>加入費</span> (Gia Nhập Phí)<br><ul><li><b>加 (가)</b>: Gia (Thêm vào).</li><li><b>入 (입)</b>: Nhập (Vào).</li></ul>" },
+    { id: 40, kr: "수수료", vn: "lệ phí, hoa hồng", cat: "Mua sắm & Dịch vụ", 
+      ex_kr: "타행 ATM을 이용하면 수수료가 부과됩니다.", ex_vn: "Nếu sử dụng ATM của ngân hàng khác thì sẽ bị tính lệ phí.", 
+      han: "<span class='hanja'>手數料</span> (Thủ Số Liệu)<br><ul><li><b>手數 (수수)</b>: Công sức bỏ ra (Thủ là tay, Số là đếm/vất vả).</li><li><b>料 (료/요)</b>: Tiền trả cho công sức đó.</li></ul>" },
+    { id: 41, kr: "전단지", vn: "truyền đơn, tờ rơi quảng cáo", cat: "Mua sắm & Dịch vụ", 
+      ex_kr: "길에서 피자집 전단지를 받았다.", ex_vn: "Tôi nhận được tờ rơi quảng cáo tiệm pizza trên đường.", 
+      han: "<span class='hanja'>傳單紙</span> (Truyền Đơn Chỉ)<br><ul><li><b>傳 (전)</b>: Truyền (Truyền đi).</li><li><b>單 (단)</b>: Đơn (Giấy tờ đơn lẻ).</li><li><b>紙 (지)</b>: Chỉ (Giấy).</li></ul>" },
+
+    // --- TỪ VỰNG CHUNG / TỪ KHÓ ---
+    { id: 42, kr: "지정되다", vn: "được chỉ định", cat: "Từ vựng chung", 
+      ex_kr: "그곳은 금연 구역으로 지정되었다.", ex_vn: "Nơi đó đã được chỉ định là khu vực cấm hút thuốc.", 
+      han: "<span class='hanja'>指定</span> (Chỉ Định)<br><ul><li><b>指 (지)</b>: Chỉ (Chỉ tay, trỏ vào).</li><li><b>定 (정)</b>: Định (Quyết định).</li></ul>" },
+    { id: 43, kr: "대상", vn: "mục tiêu, đối tượng", cat: "Từ vựng chung", 
+      ex_kr: "이 프로그램은 초등학생을 대상으로 합니다.", ex_vn: "Chương trình này lấy học sinh tiểu học làm đối tượng.", 
+      han: "<span class='hanja'>對象</span> (Đối Tượng)<br><ul><li><b>對 (대)</b>: Đối (Hướng về).</li><li><b>象 (상)</b>: Tượng (Hình dạng, vật/người).</li></ul>" },
+    { id: 44, kr: "처리", vn: "xử lý, giải quyết", cat: "Từ vựng chung", 
+      ex_kr: "불만 사항은 고객 센터에서 신속히 처리합니다.", ex_vn: "Các điều bất mãn sẽ được trung tâm khách hàng xử lý nhanh chóng.", 
+      han: "<span class='hanja'>處理</span> (Xứ/Xử Lý)<br><ul><li><b>處 (처)</b>: Xử (Sắp xếp, giải quyết).</li><li><b>理 (리)</b>: Lý (Cai quản, lẽ phải).</li></ul>" },
+    { id: 45, kr: "대량", vn: "số lượng lớn", cat: "Từ vựng chung", 
+      ex_kr: "공장에서 제품을 대량으로 생산하고 있다.", ex_vn: "Nhà máy đang sản xuất sản phẩm với số lượng lớn.", 
+      han: "<span class='hanja'>大量</span> (Đại Lượng)<br><ul><li><b>大 (대)</b>: Đại (Lớn).</li><li><b>量 (량)</b>: Lượng (Số lượng).</li></ul>" },
+    { id: 46, kr: "농수산물", vn: "sản phẩm nông thủy sản", cat: "Từ vựng chung", 
+      ex_kr: "농수산물 시장에 가면 싱싱한 채소와 생선을 살 수 있다.", ex_vn: "Đến chợ nông thủy sản có thể mua được rau và cá tươi ngon.", 
+      han: "<span class='hanja'>農水産物</span> (Nông Thủy Sản Vật)<br><ul><li><b>農 (농)</b>: Nông nghiệp.</li><li><b>水 (수)</b>: Thủy (Nước/Biển).</li><li><b>産物 (산물)</b>: Sản vật làm ra.</li></ul>" },
+    { id: 47, kr: "약재", vn: "dược liệu", cat: "Từ vựng chung", 
+      ex_kr: "한의원에서 여러 가지 약재를 끓여 한약을 만들었다.", ex_vn: "Phòng khám đông y đã đun nhiều loại dược liệu để làm thuốc bắc.", 
+      han: "<span class='hanja'>藥材</span> (Dược Tài)<br><ul><li><b>藥 (약)</b>: Dược (Thuốc).</li><li><b>材 (재)</b>: Tài (Nguyên liệu).</li></ul>" },
+    { id: 48, kr: "원목", vn: "gỗ thô, gỗ nguyên bản", cat: "Từ vựng chung", 
+      ex_kr: "이 식탁은 최고급 원목으로 만들어졌습니다.", ex_vn: "Bàn ăn này được làm từ gỗ thô cao cấp nhất.", 
+      han: "<span class='hanja'>原木</span> (Nguyên Mộc)<br><ul><li><b>原 (원)</b>: Nguyên (Ban đầu, chưa chế biến).</li><li><b>木 (목)</b>: Mộc (Gỗ).</li></ul>" },
+    { id: 49, kr: "제거", vn: "loại trừ, loại bỏ", cat: "Từ vựng chung", 
+      ex_kr: "청소기로 먼지를 완벽하게 제거했다.", ex_vn: "Tôi đã dùng máy hút bụi loại bỏ hoàn toàn bụi bẩn.", 
+      han: "<span class='hanja'>除去</span> (Trừ Khử)<br><ul><li><b>除 (제)</b>: Trừ (Bỏ đi).</li><li><b>去 (거)</b>: Khử/Cứ (Đi khỏi, rời đi).</li></ul>" },
+    { id: 50, kr: "얼리다", vn: "làm đông lại, làm đóng băng", cat: "Từ vựng chung", 
+      ex_kr: "남은 국은 냉동실에 얼려 두세요.", ex_vn: "Canh thừa thì hãy để đông lại trong ngăn đá nhé.", 
+      han: "🌱 <b>Từ Thuần Hàn</b>. Đây là dạng động từ sai khiến (사동사) của động từ <b>얼다</b> (bị đóng băng, lạnh cóng). Có nghĩa là làm cho một vật gì đó bị đóng băng." }
+];
+
+// Randomize distractors
+let allQuestions = [];
+data.forEach((item) => {
+    let pool = data.filter(x => x.vn !== item.vn);
+    pool.sort(() => 0.5 - Math.random());
+    
+    let distractors = [pool[0].vn, pool[1].vn, pool[2].vn];
+    let options = [...distractors, item.vn];
+    options.sort(() => 0.5 - Math.random()); 
+    
+    allQuestions.push({
+        id: item.id,
+        kr: item.kr,
+        cat: item.cat,
+        options: options,
+        correctIndex: options.indexOf(item.vn),
+        answerText: item.vn,
+        ex_kr: item.ex_kr,
+        ex_vn: item.ex_vn,
+        han: item.han
+    });
+});
+
+let score = 0;
+let answeredCount = 0;
+let totalQ = 50;
+let wrongQuestionIds = []; 
+const container = document.getElementById('quiz-container');
+
+function renderQuiz(questionsToRender) {
+    container.innerHTML = '';
+    let currentCategory = '';
+
+    let sortedQuestions = [...questionsToRender].sort((a, b) => a.cat.localeCompare(b.cat));
+
+    sortedQuestions.forEach((q) => {
+        if (q.cat !== currentCategory) {
+            currentCategory = q.cat;
+            container.innerHTML += `<div class="category-title">📂 CHỦ ĐỀ: ${currentCategory}</div>`;
+        }
+
+        let html = `
+        <div class="question-card" id="q-card-${q.id}">
+            <div class="q-header">CÂU SỐ ${q.id} <span class="badge">${q.cat}</span></div>
+            <div class="q-word">${q.kr}</div>
+            <div class="options" id="opts-${q.id}">
+                ${q.options.map((opt, oIndex) => `
+                    <button class="opt-btn" onclick="checkAns(${q.id}, ${oIndex}, this)">${opt}</button>
+                `).join('')}
+            </div>
+            
+            <div class="explanation" id="exp-${q.id}">
+                <strong class="correct-ans">✅ Đáp án: ${q.answerText}</strong>
+                <div class="example-box">
+                    <span class="kr-ex">"${q.ex_kr}"</span>
+                    <div class="vn-ex">➔ ${q.ex_vn}</div>
+                </div>
+                <div class="han-viet-box">
+                    <strong>🔍 Phân tích Gốc Từ:</strong><br>
+                    ${q.han}
+                </div>
+            </div>
+        </div>
+        `;
+        container.innerHTML += html;
+    });
+}
+
+function checkAns(questionId, selectedIndex, btnElement) {
+    const q = allQuestions.find(item => item.id === questionId);
+    const optionsDiv = document.getElementById(`opts-${questionId}`);
+    const buttons = optionsDiv.querySelectorAll('.opt-btn');
+    
+    buttons.forEach((btn, idx) => {
+        btn.disabled = true;
+        if (idx === q.correctIndex) {
+            btn.classList.add('correct');
+        } else if (idx === selectedIndex) {
+            btn.classList.add('wrong');
+        }
+    });
+    
+    answeredCount++;
+    if (selectedIndex === q.correctIndex) {
+        score++;
+    } else {
+        if (!wrongQuestionIds.includes(questionId)) {
+            wrongQuestionIds.push(questionId);
+        }
+    }
+    
+    document.getElementById('score-text').innerText = `Điểm: ${score} / ${answeredCount} (Tổng: ${totalQ})`;
+    document.getElementById(`exp-${questionId}`).style.display = 'block';
+
+    if (wrongQuestionIds.length > 0) {
+        document.getElementById('retry-btn').style.display = 'inline-block';
+    }
+}
+
+function retryWrongQuestions() {
+    if (wrongQuestionIds.length === 0) return;
+
+    let retryList = allQuestions.filter(q => wrongQuestionIds.includes(q.id));
+    renderQuiz(retryList);
+    
+    score = 0;
+    answeredCount = 0;
+    totalQ = retryList.length;
+    wrongQuestionIds = [];
+    document.getElementById('score-text').innerText = `Điểm: 0 / 0 (Đang ôn lại ${totalQ} câu sai)`;
+    document.getElementById('retry-btn').style.display = 'none';
+    
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+window.onload = () => {
+    renderQuiz(allQuestions);
+};
+</script>
+
+</body>
+</html>
